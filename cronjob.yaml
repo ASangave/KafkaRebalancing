@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: kafka-rebalancing
 spec:
-  schedule: "*/5 * * * *"
+  schedule: "0 0 * * *"
   jobTemplate:
     spec:
       template:
@@ -27,5 +27,7 @@ spec:
               apk add openssh
               apk add python-dev
               pip install kafka-tools
+              bin/kafka-topics.sh --describe ${KAFKA_ZOOKEEPER_CONNECT}
               kafka-assigner -z ${KAFKA_ZOOKEEPER_CONNECT} -e balance --types count size
+              kafka-assigner.py -z ${KAFKA_ZOOKEEPER_CONNECT} -e reorder
           restartPolicy: OnFailure
